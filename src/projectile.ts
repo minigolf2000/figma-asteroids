@@ -26,8 +26,7 @@ export class Projectile {
     x += this.velocity.x * 2 - 1
     y += this.velocity.y * 2 - 1
     this.currentRectangle = {x, y, diameter: 4, rotation: 0}
-    this.node.x = x
-    this.node.y = y
+    this.setCurrentPosition({x, y})
   }
 
   public getNode() {
@@ -42,8 +41,14 @@ export class Projectile {
     this.currentRectangle.x = position.x
     this.currentRectangle.y = position.y
 
-    this.node.x = position.x
-    this.node.y = position.y
+    // This is functionally the same as:
+    // this.node.x = position.x
+    // this.node.y = position.y
+    // But sets them both in 1 Plugin API call instead of 2
+    this.node.relativeTransform = [
+      [1, 0, position.x],
+      [0, 1, position.y]
+    ]
   }
 
   public nextFrame() {

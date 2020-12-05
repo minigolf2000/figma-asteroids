@@ -5,6 +5,12 @@ import { add, multiply, normalize } from "./vector"
 
 const SPAWN_SIZE_PROPORTION = 0.5
 
+interface AsteroidPluginData {
+  numLives: number
+  velocity: Vector
+  id: string
+}
+
 export class Asteroid {
 
   private node: SceneNode
@@ -14,13 +20,18 @@ export class Asteroid {
 
   private currentRectangle: Rectangle // repeatedly accessing Figma node objects is slow. store this value locally
 
-  public constructor(node: SceneNode) {
-    this.currentRectangle = {x: node.x, y: node.y, diameter: node.width, rotation: node.rotation}
+  public constructor(node: SceneNode, pluginData: AsteroidPluginData) {
+    const relativeTransform = node.relativeTransform // this is a property that contains node's x, y, rotation as a matrix
+    this.currentRectangle = {
+      x: relativeTransform[0][2],
+      y: relativeTransform[1][2],
+      diameter: node.width,
+      rotation: 0 // We do not support asteroid rotation. Probably will be hard to do
+    }
     this.node = node
 
-    const { numLives, velocity } = JSON.parse(node.getPluginData("asteroid"))
-    this.numLives = numLives
-    this.velocity = velocity
+    this.numLives = pluginData.numLives
+    this.velocity = pluginData.velocity
   }
 
   public getNode() {
@@ -64,8 +75,10 @@ export class Asteroid {
     getWorldNode().appendChild(spawn)
 
     const velocity = multiply(normalize({x: Math.random() * 2 - 1, y: Math.random() * 2 - 1}), speedFunction(this.numLives - 1))
-    spawn.setPluginData("asteroid", JSON.stringify({velocity, numLives: this.numLives - 1, id: spawn.id}))
-    return new Asteroid(spawn)
+    const spawnPluginData = {velocity, numLives: this.numLives - 1, id: spawn.id}
+    spawn.setPluginData("asteroid", JSON.stringify(spawnPluginData))
+
+    return new Asteroid(spawn, spawnPluginData)
   }
 
   public nextFrame() {

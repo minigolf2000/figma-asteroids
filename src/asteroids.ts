@@ -26,7 +26,7 @@ export function getAsteroids() {
   return a
 }
 
-// export let seenAsteroidIds = new Set()
+export let seenAsteroidIds = new Set()
 
 export class Asteroids {
   private asteroids: Asteroid[] = []
@@ -38,14 +38,15 @@ export class Asteroids {
         return
       }
 
-      const pluginData = n.getPluginData("asteroid")
-      if (!pluginData || JSON.parse(pluginData).id !== n.id) { // a new asteroid has been pasted into the world
+      let pluginData = JSON.parse(n.getPluginData("asteroid") || "{}")
+      if (pluginData === {} || pluginData.id !== n.id) { // a new asteroid has been pasted into the world
         const numLives = 2
         const velocity = multiply(normalize({x: Math.random() * 2 - 1, y: Math.random() * 2 - 1}), speedFunction(numLives))
-        n.setPluginData("asteroid", JSON.stringify({velocity, numLives, id: n.id}))
+        pluginData = {velocity, numLives, id: n.id}
+        n.setPluginData("asteroid", JSON.stringify(pluginData))
       }
 
-      this.asteroids.push(new Asteroid(n))
+      this.asteroids.push(new Asteroid(n, pluginData))
     })
     a = this
   }
