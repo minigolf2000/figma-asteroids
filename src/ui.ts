@@ -27,16 +27,16 @@ onmessage = (event) => {
       livesNode.textContent = numLives
     }
     if (numLives === 0) {
-      const statusNode = document.getElementById("status")
-      if (statusNode) {
-        statusNode.classList.add("last-life")
+      const aliveNode = document.getElementById("alive")
+      if (aliveNode) {
+        aliveNode.classList.add("last-life")
       }
     }
   }
   if (color !== undefined) {
-    const statusNode = document.getElementById("status")
-    if (statusNode) {
-      statusNode.classList.remove("dead")
+    const aliveNode = document.getElementById("alive")
+    if (aliveNode) {
+      aliveNode.classList.remove("dead")
     }
 
     const shipNode = document.getElementById("ship")
@@ -47,9 +47,9 @@ onmessage = (event) => {
     }
   }
   if (death) {
-    const statusNode = document.getElementById("status")
-    if (statusNode) {
-      statusNode.classList.add("dead")
+    const aliveNode = document.getElementById("alive")
+    if (aliveNode) {
+      aliveNode.classList.add("dead")
     }
   }
 }

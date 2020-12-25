@@ -74,7 +74,8 @@ export class Player {
     this.node.rotation = 0
     // X and Y actually represent the top-left of the player's spaceship
     this.node.x = width / 2 + Math.random() * 50 - 25
-    this.node.y = height / 2 + Math.random() * 50 - 25
+    // y position is purposefully moved 75px up so that plugin window starting position does not obscure ship
+    this.node.y = height / 2 + Math.random() * 25 - 100
     this.currentMidpoint = {x: this.node.x, y: this.node.y, diameter: SPACESHIP_SIZE, rotation: 0}
     figma.ui.postMessage({numLives: this.numLives, color: this.color})
   }

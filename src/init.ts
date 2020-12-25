@@ -75,7 +75,7 @@ const findNearestFrameAncestor = () => {
 const sharedSetup = (worldNode: FrameNode) => {
   setWorldNode(worldNode)
   setWorldRectangle(worldNode)
-  figma.showUI(__html__, {width: 330, height: 130})
+  figma.showUI(__html__, {width: 390, height: 68})
 
   // set zoom to be really tiny, then call scrollAndZoomIntoView. This centers view on the world
   figma.viewport.center = {x: worldNode.x + worldNode.width, y: worldNode.y + worldNode.height}

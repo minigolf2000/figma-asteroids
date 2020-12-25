@@ -6,29 +6,44 @@ body {
 #ui {
   height: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   box-sizing: border-box;
   align-items: center;
+  justify-content: space-between;
+  padding: 0px 20px;
+  user-select: none;
 }
 
-#ui:not(:focus) #status, #ui:not(:focus) svg {
-  opacity: .05;
+#ui:not(:focus) #alive, #ui:not(:focus) svg {
+  opacity: .03;
 }
 
-#status {
+#alive {
   flex-direction: row;
   align-items: center;
+  width: 100%;
 }
 
-#status.dead:not(.last-life) {
+#alive.dead:not(.last-life) {
   opacity: .2;
 }
 
-#status.dead.last-life, #game-over {
+#numLives {
+  margin-right: 20px;
+}
+
+#game-over {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+#alive.dead.last-life, #game-over {
   display: none;
 }
 
-#status, #status.dead.last-life + #game-over {
+#alive, #alive.dead.last-life + #game-over {
   display: flex;
   height: 60px;
 }
@@ -36,7 +51,8 @@ body {
 #paused {
   display: none;
   flex-direction: column;
-  line-height: 2em;
+  line-height: 1.4em;
+  font-size: 18px;
   position: absolute;
   text-align: center;
   top: 50%;  /* position the top  edge of the element at the middle of the parent */
