@@ -1,17 +1,15 @@
 import { Asteroid } from './asteroid'
 import { Asteroids, getAsteroids } from './asteroids'
 import { init } from './init'
-import { FPS, getPlayer, getProjectiles, setProjectiles, isOverlapping, getWorldNode, getMultiplayerPlayers, setMultiplayerPlayers, Rectangle, setWorldRectangle } from './lib'
+import { FPS, getPlayer, getProjectiles, setProjectiles, isOverlapping, getWorldNode, getMultiplayerPlayers, setMultiplayerPlayers, Rectangle, setWorldRectangle, isHost } from './lib'
 import { Player } from './player'
 import { Projectile } from './projectile'
 
 function scanForNewMultiplayerPlayers() {
   framesSinceCheckNewShips--
   if (framesSinceCheckNewShips === 0) {
-    if (getWorldNode().getPluginData("new-ship") === "true") {
-      const playerNodeId = getPlayer().getNode().id
-      setMultiplayerPlayers(getWorldNode().findChildren(n => n.type === 'FRAME' && n.name === "🚀" && n.id !== playerNodeId) as FrameNode[])
-    }
+    const playerNodeId = getPlayer().getNode().id
+    setMultiplayerPlayers(getWorldNode().findChildren(n => n.type === 'FRAME' && n.name === "🚀" && n.id !== playerNodeId) as FrameNode[])
     framesSinceCheckNewShips = 30
   }
 }
@@ -143,7 +141,7 @@ function nextFrame() {
   scanForNewMultiplayerPlayers()
   resizeWorld()
 
-  if (isServer) {
+  if (isHost()) {
     getAsteroids().nextFrame()
   }
 }
@@ -159,5 +157,5 @@ export function printFPS() {
 let framesSinceCheckNewShips = 30
 let framesSinceResizeWorld = 15
 
-const isServer = init()
+init()
 setInterval(nextFrame, 1000 / FPS)

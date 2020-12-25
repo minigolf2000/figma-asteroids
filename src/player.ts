@@ -55,11 +55,14 @@ export class Player {
     this.thrustNode.visible = false
     this.node.clipsContent = false
     this.node.name = "🚀"
+    this.node.locked = true
+
     this.projectileFrameNode = figma.createFrame()
     this.projectileFrameNode.name = "projectile-container"
     this.projectileFrameNode.fills = []
     this.projectileFrameNode.resize(1, 1)
     this.projectileFrameNode.clipsContent = false
+    this.projectileFrameNode.locked = true
     getWorldNode().appendChild(this.projectileFrameNode)
 
     this.newShip()

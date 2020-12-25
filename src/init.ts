@@ -8,16 +8,15 @@ import { Player } from './player'
 export function init() {
   // TODO: support configurable player numLives?
 
-  const alreadyRunningWorld: FrameNode = figma.currentPage.children.find(n => n.type === "FRAME" && n.name.includes(" (running)")) as FrameNode
+  const alreadyRunningWorld: FrameNode = figma.currentPage.children.find(n => n.type === "FRAME" && n.name.includes(" (to join, click Play Asteroids in right panel!)")) as FrameNode
   if (alreadyRunningWorld) {
     sharedSetup(alreadyRunningWorld)
-    return false
+    return
   }
 
   let templateWorldNode: FrameNode | null = findNearestFrameAncestor()
   let worldNode: FrameNode | null
   if (templateWorldNode) {
-    templateWorldNode.visible = false
     templateWorldNode.setRelaunchData({relaunch: ''})
     worldNode = templateWorldNode.clone()
   } else {
@@ -33,7 +32,7 @@ export function init() {
     worldNode.y = figma.viewport.center.y - defaultWorldSize / 2
 
   }
-  worldNode.name = `${worldNode.name} (running)`
+  worldNode.name = `${worldNode.name} (to join, click Play Asteroids in right panel!)`
   worldNode.expanded = false // collapse this for performance by avoiding layers panel rerenders
   worldNode.visible = true
 
@@ -61,14 +60,7 @@ export function init() {
   figma.currentPage.setRelaunchData({relaunch: ''})
   worldNode.setRelaunchData({relaunch: ''})
 
-  figma.on("close", () => {
-    !getWorldNode().removed && getWorldNode().remove()
-    if (templateWorldNode) {
-      templateWorldNode.visible = true
-    }
-  })
-
-  return true
+  return
 }
 
 const findNearestFrameAncestor = () => {
@@ -85,7 +77,7 @@ const sharedSetup = (worldNode: FrameNode) => {
   setWorldRectangle(worldNode)
   figma.showUI(__html__, {width: 330, height: 130})
 
-  // set zoom to be really tiny, then call scrollAndZoomIntoView to center it on the world
+  // set zoom to be really tiny, then call scrollAndZoomIntoView. This centers view on the world
   figma.viewport.center = {x: worldNode.x + worldNode.width, y: worldNode.y + worldNode.height}
   figma.viewport.zoom = 100
   figma.viewport.scrollAndZoomIntoView([getWorldNode()])
@@ -95,7 +87,6 @@ const sharedSetup = (worldNode: FrameNode) => {
   const player = new Player()
   setPlayer(player)
   worldNode.appendChild(player.getNode())
-  worldNode.setPluginData("new-ship", "true")
 
   const pastSelection: string[] = figma.currentPage.selection.map(n => n.id)
   figma.currentPage.selection = []
@@ -106,6 +97,10 @@ const sharedSetup = (worldNode: FrameNode) => {
     figma.currentPage.selection = pastSelection.map(id => figma.getNodeById(id)).filter(n => !!n) as SceneNode[]
     !getPlayer().getProjectileFrameNode().removed && getPlayer().getProjectileFrameNode().remove()
     !getPlayer().getNode().removed && getPlayer().getNode().remove()
+
+    if (!getWorldNode().removed && !getWorldNode().findChild(c => c.name === "🚀")) {
+      getWorldNode().remove()
+    }
   })
 
 }

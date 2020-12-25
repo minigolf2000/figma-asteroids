@@ -90,3 +90,15 @@ export function getMultiplayerPlayers() {
 export function setMultiplayerPlayers(m: FrameNode[]) {
   mp = m
 }
+
+function guidToSessionId(guid: string) {
+  return parseInt(guid.substring(0, guid.indexOf(":")));
+}
+
+// TODO: this can be combined with scanForNewMultiplayerPlayers for performance
+export function isHost() {
+  const mySessionId = guidToSessionId(getPlayer().getNode().id)
+  return !getMultiplayerPlayers().find((p: FrameNode) =>
+    guidToSessionId(p.id) < mySessionId
+  )
+}
